@@ -1,0 +1,30 @@
+{
+    "name" : "node-red-contrib-melcloud",
+    "version" : "0.1",
+    "description" : "Node-RED node to interface with MELCloud API",
+    "dependencies": {
+      "https" : "^1.0.0",
+      "urllib" : "^2.13.0"
+    },
+    "engines":
+    {
+      "node": ">=5.0.0"
+    },
+    "repository" :
+      { "type" : "git"
+      , "url" : "https://github.com/ysimonx/node-red-contrib-melcloud.git"
+    },
+    "license": "MIT",
+    "keywords": [ "node-red", "mitsubishi", "melcloud"],
+    "node-red" : {
+      "nodes": {
+        "melcloud-connect": "melcloud-connect.js"
+      }
+    },
+    "author": {
+      "name": "Yannick Simon",
+      "email": "yannick.simon@gmail.com",
+      "url": "https://www.kysoe.com"
+    }
+}
+    
