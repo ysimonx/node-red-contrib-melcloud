@@ -248,6 +248,7 @@ class Melcloud {
         var ContextKey = self.context.payload.LoginData.ContextKey;
         var url =  "/Mitsubishi.Wifi.Client/Device/Get?id=" + deviceid + "&buildingID=" + buildingid;
     
+        // console.log(url);
         var options = {
             method: 'GET',
             host: "app.melcloud.com",

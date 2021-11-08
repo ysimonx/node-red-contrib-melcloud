@@ -45,20 +45,50 @@ module.exports = function(RED) {
 
             melcloud.getContext()
                 .then(
-                    () =>  { 
-                        melcloud.getDeviceInfo( node.deviceid, node.buildingid)
+                   async () =>  { 
+
+
+                        
+                        var d = node.deviceid;
+                        if ( node.input_deviceid != null) {
+                            d = node.input_deviceid;
+                        }
+
+
+                        var b = node.buildingid;
+                        if ( node.input_buildingid != null) {
+                            b = node.input_buildingid;
+                        }
+                        
+                        var p = node.power;
+                        if ( node.input_power != null) {
+                            p = node.input_power;
+                        }
+
+                        var t = node.settemperature;
+                        if ( node.input_settemperature != null) {
+                            t = node.input_settemperature;
+                        }
+
+                        var fsp = node.setfanspeed;
+                        if ( node.input_setfanspeed != null) {
+                            fsp = node.input_setfanspeed;
+                        }
+                        
+                        await melcloud.getDeviceInfo( d, b )
                         .then(async device => {
                            var blnUpdated = false;
-                           if (node.settemperature && node.settemperature !== "") {
-                                console.log("set temperature = " + node.settemperature);
-                                device = setTemperature(device, node.settemperature);
+                           if (t && t !== "") {
+                                console.log("set temperature = " + t);
+                                device = setTemperature(device, t);
                                 blnUpdated = true;
 
                             }
 
-                            if (node.power && node.power !== "") {
-                                console.log("set power = " + node.power);
-                                device = setPower(device, node.power);
+
+                            if (p && p !== "") {
+                                console.log("set power = " + p);
+                                device = setPower(device, p);
                                 blnUpdated = true;
                             }
 
@@ -69,21 +99,26 @@ module.exports = function(RED) {
                                 blnUpdated = true;
                             }
 
-                            if (node.setfanspeed && node.setfanspeed !== "") {
-                                console.log("set setfanspeed = " + node.setfanspeed);
-                                device = setFanSpeed(device, node.setfanspeed);
-                                blnUpdated = true;
+                            
+                            if (fsp != null && fsp !== "") {
+                                if (fsp==0 || fsp==1 || fsp==2 || fsp==3 || fsp==4 || fsp==5 ) {
+                                    console.log("set setfanspeed = " + fsp);
+                                    device = setFanSpeed(device, fsp );
+                                    blnUpdated = true;
+                                } else {
+                                    console.log("zarb");
+                                }
                             }
                             
                             if (blnUpdated) {
                                 device = await melcloud.putDeviceInfo(device);
                                 node.send(device);
-                                node.status({});
+                                node.status({ text: "Temp : " + device.payload.RoomTemperature + " °C"});
                                 return; 
                             }
 
                             node.send(device);
-                            node.status({});
+                            node.status({ text: "Temp : " + device.payload.RoomTemperature  + " °C"});
                         }).catch(err => {
                             node.error(err);
                             node.status({ fill: "red", shape: "dot", text: err });
@@ -102,7 +137,45 @@ module.exports = function(RED) {
             
             });
 
-            node.on("input", function(){
+            node.on("input", function(msg){
+
+                node.input_deviceid = null;
+                node.input_building = null;
+                node.input_power    = null; 
+                node.input_settemperature = null;
+                node.input_setfanspeed = null;
+
+               
+
+                if (msg.hasOwnProperty("device")) {
+                    if (msg.device.hasOwnProperty("deviceid")) {
+                        node.input_deviceid = msg.device.deviceid;
+                    }
+                    if (msg.device.hasOwnProperty("buildingid")) {
+                        node.input_buildingid = msg.device.buildingid;
+                    }
+
+                    if (msg.device.hasOwnProperty("command")) {
+
+                        if (msg.device.command.hasOwnProperty("power")) {
+                            node.input_power = msg.device.command.power;
+                        }
+
+                        if (msg.device.command.hasOwnProperty("temperature")) {
+                            node.input_settemperature = msg.device.command.temperature;
+                        }
+
+                        if (msg.device.command.hasOwnProperty("fanspeed")) {
+                            node.input_setfanspeed = msg.device.command.fanspeed;
+                        }
+
+                    }
+                } 
+
+              
+               
+
+
                 fetchDeviceData();
             });
     }

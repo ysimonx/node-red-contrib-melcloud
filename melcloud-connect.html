@@ -29,14 +29,12 @@
     color: "#ffcc66",
     defaults: {
       server: {value:"", type:"melcloud-credential", required: true},
-      buildingid: { value:"", required: true },
-      deviceid: { value:"" , required: true},
+      buildingid: { value:"" },
+      deviceid: { value:""},
       mode: { value:"", required: false},
-      
       power: { value:"", required: false}, 
-
       settemperature: { value:"", required: false,  validate:RED.validators.regex(/[0-9\.]*/) },
-      setfanspeed: { value:"", required: false }
+      setfanspeed: { value:"", required: false,  validate:RED.validators.regex(/[0-9]*/) }
     },
     inputs: 1,
     outputs: 1,
@@ -79,7 +77,7 @@
    </select>
   </div>
   <div class="form-row">
-    <label for="node-input-settemperature"><i class="fa fa-thermometer-half"></i> Set Temperature</label>
+    <label for="node-input-settemperature"><i class="fa fa-thermometer-half"></i> Set Temperature C°</label>
     <input type="text" id="node-input-settemperature" />
   </div>
   <div class="form-row">

@@ -18,3 +18,8 @@ melcloud-connect)
 ![Alt text](melcloud-device.png "Melcloud-device")
 
 All provided setting (switch on/off, temperature, fan speed, mode ...) will update your melcloud configuration 
+
+
+You can also send input data with msg.device
+![Alt text](melcloud-override.png "Melcloud-device-override")
+
