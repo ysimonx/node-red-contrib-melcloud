@@ -23,3 +23,5 @@ All provided setting (switch on/off, temperature, fan speed, mode ...) will upda
 You can also send input data with msg.device
 ![Alt text](melcloud-override.png "Melcloud-device-override")
 
+Full documentation on : https://www.npmjs.com/package/node-red-contrib-melcloud
+or https://github.com/ysimonx/node-red-contrib-melcloud
