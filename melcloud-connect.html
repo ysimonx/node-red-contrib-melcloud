@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('remote-credential',{
+  RED.nodes.registerType('melcloud-credential',{
       category: 'config',
       defaults: {
           email: {value:"user@domain.com",required:true},
@@ -11,7 +11,7 @@
   });
 </script>
 
-<script type="text/html" data-template-name="remote-credential">
+<script type="text/html" data-template-name="melcloud-credential">
   <div class="form-row">
       <label for="node-config-input-email"><i class="fa fa-bookmark"></i> Email</label>
       <input type="text" id="node-config-input-email">
@@ -28,7 +28,7 @@
     category: "input",
     color: "#ffcc66",
     defaults: {
-      server: {value:"", type:"remote-credential", required: true},
+      server: {value:"", type:"melcloud-credential", required: true},
       buildingid: { value:"", required: true },
       deviceid: { value:"" , required: true},
       mode: { value:"", required: false},
@@ -103,7 +103,7 @@
     category: "input",
     color: "#ffcc66",
     defaults: {
-      server: {value:"", type:"remote-credential", required: true},
+      server: {value:"", type:"melcloud-credential", required: true},
       command: { value:"" },
     },
     inputs: 1,

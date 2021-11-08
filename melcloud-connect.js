@@ -17,7 +17,7 @@ module.exports = function(RED) {
         
     }
 
-    RED.nodes.registerType("remote-credential", MelCloudCredentials);
+    RED.nodes.registerType("melcloud-credential", MelCloudCredentials);
     
 
 

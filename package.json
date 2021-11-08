@@ -1,7 +1,7 @@
 {
     "name" : "node-red-contrib-melcloud",
-    "version" : "1.0.0",
-    "description" : "Node-RED node to interface with MELCloud API",
+    "version" : "1.0.1",
+    "description" : "Node-RED node to interface with Mitsubishi Air Conditioning Device with MELCloud API",
     "dependencies": {
       "https" : "^1.0.0",
       "urllib" : "^2.13.0"
@@ -15,7 +15,7 @@
       , "url" : "https://github.com/ysimonx/node-red-contrib-melcloud.git"
     },
     "license": "MIT",
-    "keywords": [ "node-red", "mitsubishi", "melcloud"],
+    "keywords": [ "node-red", "mitsubishi", "melcloud", "MSZ-AP25VG", "air conditioning", "heat pump", "pac"],
     "node-red" : {
       "nodes": {
         "melcloud-connect": "melcloud-connect.js"
