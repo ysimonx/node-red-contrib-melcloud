@@ -31,15 +31,18 @@
       server: {value:"", type:"remote-credential", required: true},
       buildingid: { value:"", required: true },
       deviceid: { value:"" , required: true},
+      mode: { value:"", required: false},
+      
       power: { value:"", required: false}, 
-      settemperature: { value:"", required: false, validate: RED.validators.number() }
 
+      settemperature: { value:"", required: false,  validate:RED.validators.regex(/[0-9\.]*/) },
+      setfanspeed: { value:"", required: false }
     },
     inputs: 1,
     outputs: 1,
     icon: "feed.png",
     label: function() {
-      return "melcloud-deviceid " + this.deviceid ;
+      return "melcloud-device : " + this.deviceid ;
     }
   });
 </script>
@@ -58,8 +61,19 @@
       <input type="text" id="node-input-deviceid" />
   </div>
   <div class="form-row">
+    <label for="node-input-mode"><i class="fa fa-terminal"></i> Mode</label>
+    <select id="node-input-mode">
+      <option value=""></option>
+      <option value="auto">Auto</option>
+      <option value="heat">Heat</option>
+      <option value="fan">Fan</option>
+      <option value="cooling">Cooling</option>
+   </select>
+  </div>
+  <div class="form-row">
     <label for="node-input-power"><i class="fa fa-terminal"></i> Power</label>
     <select id="node-input-power">
+      <option value=""></option>
       <option value="on">On</option>
       <option value="off">Off</option>
    </select>
@@ -67,6 +81,18 @@
   <div class="form-row">
     <label for="node-input-settemperature"><i class="fa fa-terminal"></i> Set Temperature</label>
     <input type="text" id="node-input-settemperature" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-setfanspeed"><i class="fa fa-terminal"></i> Set Fan Speed</label>
+    <select id="node-input-setfanspeed">
+      <option value=""></option>
+      <option value="0">Auto</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+   </select>
   </div>
 </script>
 

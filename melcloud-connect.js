@@ -29,7 +29,9 @@ module.exports = function(RED) {
         node.buildingid = n.buildingid;
 
         node.settemperature = n.settemperature;
+        node.setfanspeed = n.setfanspeed;
         node.power = n.power;
+        node.mode = n.mode;
 
         node.credentials = RED.nodes.getNode(n.server);
 
@@ -57,6 +59,19 @@ module.exports = function(RED) {
                             if (node.power && node.power !== "") {
                                 console.log("set power = " + node.power);
                                 device = setPower(device, node.power);
+                                blnUpdated = true;
+                            }
+
+
+                            if (node.mode && node.mode !== "") {
+                                console.log("set mode = " + node.mode);
+                                device = setOperationMode(device, node.mode);
+                                blnUpdated = true;
+                            }
+
+                            if (node.setfanspeed && node.setfanspeed !== "") {
+                                console.log("set setfanspeed = " + node.setfanspeed);
+                                device = setFanSpeed(device, node.setfanspeed);
                                 blnUpdated = true;
                             }
                             
@@ -101,14 +116,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, n);
 
         var node = this;
-       
-       
-        node.interval = n.interval;
-        node.command = n.command;
-        node.timer = {};
-
         node.credentials = RED.nodes.getNode(n.server);
-
 
         node.email = node.credentials.email;
         node.password = node.credentials.password;
@@ -174,6 +182,46 @@ module.exports = function(RED) {
 
        return device;
     }
+
+    // OperationMode (int): 1 = Chauffage / 3 = Climatisation / 7 = Ventilation / 8 = Automatique
+    function setOperationMode(device, value) {
+
+        if (value == "auto") {
+            device.payload.OperationMode = 8;
+        }
+
+        if (value == "heat") {
+            device.payload.OperationMode = 1;
+        }
+
+        if (value == "fan") {
+            device.payload.OperationMode = 7;
+        }
+
+        if (value == "cooling") {
+            device.payload.OperationMode = 3;
+        }
+
+
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 2;
+
+       return device;
+    }
+
+
+    // SetFanSpeed (int): De 0 à 3 dans mon cas (Si 0, vitesse automatique / Puissance de 1 à NumberOfFanSpeeds qui définis le maximum)
+    function setFanSpeed(device, value) {
+
+       
+        device.payload.SetFanSpeed = value;
+       
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 8;
+
+       return device;
+    }
+
 
     RED.nodes.registerType("melcloud-connect", MelCloudConnectNode);
 
