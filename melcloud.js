@@ -75,7 +75,7 @@ class Melcloud {
                         }
                         msg.error = "";
                         self.context = msg;
-                        console.log(msg);
+                        
                         resolve(msg);
 
                     }
@@ -169,6 +169,76 @@ class Melcloud {
         })
     }
 
+    
+
+    putDeviceInfo( device ) {
+        var self = this;
+
+        return new Promise((resolve, reject) => {
+            var ContextKey = self.context.payload.LoginData.ContextKey;
+            var url =  "/Mitsubishi.Wifi.Client/Device/SetAta";
+        
+            var options = {
+                method: 'POST',
+                host: "app.melcloud.com",
+                port: 443,
+                path: url,
+                // authentication headers
+                headers: {
+                        'Host': 'app.melcloud.com',
+                        'Content-Type': "application/json; charset=utf-8",
+                        'X-MitsContextKey': ContextKey
+                }   
+            };
+        
+
+            var postData = device.payload;
+
+            var msg = {};
+        
+            var request = https.request(options, function(res) {
+                res.setEncoding('utf8');
+
+            
+                msg.statusCode = res.statusCode;
+                msg.payload = "";
+
+                res.on("data", function(chunk) {
+                    msg.payload += chunk;
+                
+                });
+
+                res.on("end",function() {
+
+                    try {
+                        msg.payload = JSON.parse(msg.payload); 
+                    
+                        msg.error = "";
+                        self.context = msg;
+                        
+                        resolve(msg);
+
+                    }
+                
+                    catch(e) { 
+                        msg.error = e;
+                        reject(msg); 
+                        
+                    }
+                });
+            });
+
+            request.on("error", function(err) {
+                msg.error = err;
+                reject(msg); 
+            });
+
+            request.write(JSON.stringify(postData));
+            request.end();
+
+        })
+
+    }
 
     getDeviceInfo( deviceid , buildingid) {
         var self = this;

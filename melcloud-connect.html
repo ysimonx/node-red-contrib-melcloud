@@ -29,8 +29,10 @@
     color: "#ffcc66",
     defaults: {
       server: {value:"", type:"remote-credential", required: true},
-      buildingid: { value:"" },
-      deviceid: { value:"" },
+      buildingid: { value:"", required: true },
+      deviceid: { value:"" , required: true},
+      power: { value:"", required: false}, 
+      settemperature: { value:"", required: false, validate: RED.validators.number() }
 
     },
     inputs: 1,
@@ -54,6 +56,17 @@
     <div class="form-row">
       <label for="node-input-deviceid"><i class="fa fa-terminal"></i> DeviceID</label>
       <input type="text" id="node-input-deviceid" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-power"><i class="fa fa-terminal"></i> Power</label>
+    <select id="node-input-power">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+   </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-settemperature"><i class="fa fa-terminal"></i> Set Temperature</label>
+    <input type="text" id="node-input-settemperature" />
   </div>
 </script>
 

@@ -28,12 +28,15 @@ module.exports = function(RED) {
         node.deviceid = n.deviceid;
         node.buildingid = n.buildingid;
 
+        node.settemperature = n.settemperature;
+        node.power = n.power;
+
         node.credentials = RED.nodes.getNode(n.server);
 
 
         node.email = node.credentials.email;
         node.password = node.credentials.password;
-
+        
         function fetchDeviceData() {
            
             var melcloud =  new Melcloud(node.email,node.password);
@@ -42,13 +45,33 @@ module.exports = function(RED) {
                 .then(
                     () =>  { 
                         melcloud.getDeviceInfo( node.deviceid, node.buildingid)
-                        .then(device => {
-                        
+                        .then(async device => {
+                           var blnUpdated = false;
+                           if (node.settemperature && node.settemperature !== "") {
+                                console.log("set temperature = " + node.settemperature);
+                                device = setTemperature(device, node.settemperature);
+                                blnUpdated = true;
+
+                            }
+
+                            if (node.power && node.power !== "") {
+                                console.log("set power = " + node.power);
+                                device = setPower(device, node.power);
+                                blnUpdated = true;
+                            }
+                            
+                            if (blnUpdated) {
+                                device = await melcloud.putDeviceInfo(device);
+                                node.send(device);
+                                node.status({});
+                                return; 
+                            }
+
                             node.send(device);
                             node.status({});
                         }).catch(err => {
-                            node.error(msg.error);
-                            node.status({ fill: "red", shape: "dot", text: "error" });
+                            node.error(err);
+                            node.status({ fill: "red", shape: "dot", text: err });
                             return;
                         });
                 }).catch(msg => {
@@ -127,7 +150,30 @@ module.exports = function(RED) {
         
     }
 
-    
+    function setTemperature(device, temperature) {
+
+        device.payload.SetTemperature = Number.parseFloat(temperature);
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 4;
+        
+        return device;
+
+    }
+
+    function setPower(device, value) {
+
+        if (value == "on") {
+            device.payload.Power = true;
+        }
+
+        if (value == "off") {
+            device.payload.Power = false;
+        }
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 1;
+
+       return device;
+    }
 
     RED.nodes.registerType("melcloud-connect", MelCloudConnectNode);
 
