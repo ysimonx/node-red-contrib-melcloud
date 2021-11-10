@@ -36,6 +36,10 @@ module.exports = function(RED) {
         node.credentials = RED.nodes.getNode(n.server);
 
 
+        node.vanevertical = n.vanevertical;
+        node.vanehorizontal = n.vanehorizontal;
+
+
         node.email = node.credentials.email;
         node.password = node.credentials.password;
         
@@ -74,7 +78,18 @@ module.exports = function(RED) {
                         if ( node.input_setfanspeed != null) {
                             fsp = node.input_setfanspeed;
                         }
-                        
+
+
+                        var vv = node.vanevertical;
+                        if ( node.input_vanevertical != null) {
+                            vv = node.input_vanevertical;
+                        }
+
+                        var vh = node.vanehorizontal;
+                        if ( node.input_vanehorizontal != null) {
+                            vh = node.input_vanehorizontal;
+                        }
+                                                
                         await melcloud.getDeviceInfo( d, b )
                         .then(async device => {
                            var blnUpdated = false;
@@ -110,6 +125,19 @@ module.exports = function(RED) {
                                 }
                             }
                             
+
+                            if (vh != null && vh !== "") {
+                                console.log("set vanehorizontal = " + vh);
+                                device = setVaneHorizontal(device, vh );
+                                blnUpdated = true;
+                            }
+
+                            if (vv != null && vv !== "") {
+                                console.log("set vanehvertical = " + vv);
+                                device = setVaneVertical(device, vv );
+                                blnUpdated = true;
+                            }
+
                             if (blnUpdated) {
                                 device = await melcloud.putDeviceInfo(device);
                                 node.send(device);
@@ -144,6 +172,8 @@ module.exports = function(RED) {
                 node.input_power    = null; 
                 node.input_settemperature = null;
                 node.input_setfanspeed = null;
+                node.input_vanehorizontal = null;
+                node.input_vanevertical = null;
 
                
 
@@ -167,6 +197,14 @@ module.exports = function(RED) {
 
                         if (msg.device.command.hasOwnProperty("fanspeed")) {
                             node.input_setfanspeed = msg.device.command.fanspeed;
+                        }
+
+                        if (msg.device.command.hasOwnProperty("vanehorizontal")) {
+                            node.input_vanehorizontal = msg.device.command.vanehorizontal;
+                        }
+
+                        if (msg.device.command.hasOwnProperty("vanevertical")) {
+                            node.input_vanevertical = msg.device.command.vanevertical;
                         }
 
                     }
@@ -293,6 +331,31 @@ module.exports = function(RED) {
         device.payload.EffectiveFlags = device.payload.EffectiveFlags + 8;
 
        return device;
+    }
+
+
+
+    function setVaneHorizontal(device, value) {
+
+        
+        device.payload.VaneHorizontal =  Number.parseFloat(value);
+    
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 256;
+
+    return device;
+    }
+
+
+    function setVaneVertical(device, value) {
+
+    
+        device.payload.VaneVertical =  Number.parseFloat(value);
+    
+        device.payload.HasPendingCommand = true;
+        device.payload.EffectiveFlags = device.payload.EffectiveFlags + 16;
+
+    return device;
     }
 
 
