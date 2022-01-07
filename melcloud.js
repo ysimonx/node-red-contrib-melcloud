@@ -37,7 +37,7 @@ class Melcloud {
             var postData = {
                 "Email":this.user,
                 "Password":this.password,
-                "Language":7,
+                // "Language":7,
                 "AppVersion":"1.22.7.0",
                 "Persist":false,
                 "CaptchaResponse":null
