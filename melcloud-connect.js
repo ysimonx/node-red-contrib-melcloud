@@ -133,7 +133,7 @@ module.exports = function(RED) {
                             }
 
                             if (vv != null && vv !== "") {
-                                console.log("set vanehvertical = " + vv);
+                                console.log("set vanevertical = " + vv);
                                 device = setVaneVertical(device, vv );
                                 blnUpdated = true;
                             }
