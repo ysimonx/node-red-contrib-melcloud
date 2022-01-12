@@ -305,6 +305,10 @@ module.exports = function(RED) {
             device.payload.OperationMode = 1;
         }
 
+        if (value == "dry") {
+            device.payload.OperationMode = 2;
+        }
+
         if (value == "fan") {
             device.payload.OperationMode = 7;
         }
