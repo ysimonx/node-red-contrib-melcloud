@@ -89,6 +89,11 @@ module.exports = function(RED) {
                         if ( node.input_vanehorizontal != null) {
                             vh = node.input_vanehorizontal;
                         }
+
+                        var m = node.mode;
+                        if ( node.input_mode != null) {
+                            m = node.input_mode;
+                        }
                                                 
                         await melcloud.getDeviceInfo( d, b )
                         .then(async device => {
@@ -108,9 +113,9 @@ module.exports = function(RED) {
                             }
 
 
-                            if (node.mode && node.mode !== "") {
-                                console.log("set mode = " + node.mode);
-                                device = setOperationMode(device, node.mode);
+                            if (m && m !== "") {
+                                console.log("set mode = " + m);
+                                device = setOperationMode(device, m);
                                 blnUpdated = true;
                             }
 
@@ -174,7 +179,7 @@ module.exports = function(RED) {
                 node.input_setfanspeed = null;
                 node.input_vanehorizontal = null;
                 node.input_vanevertical = null;
-
+                node.input_mode = null;
                
 
                 if (msg.hasOwnProperty("device")) {
@@ -205,6 +210,10 @@ module.exports = function(RED) {
 
                         if (msg.device.command.hasOwnProperty("vanevertical")) {
                             node.input_vanevertical = msg.device.command.vanevertical;
+                        }
+
+                        if (msg.device.command.hasOwnProperty("mode")) {
+                            node.input_mode = msg.device.command.mode;
                         }
 
                     }
