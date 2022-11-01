@@ -253,7 +253,7 @@ module.exports = function(RED) {
                             .then(list => {
                                 node.send(list);
                                 node.status({});
-                            }).catch(err => {
+                            }).catch(msg => {
                                 node.error(msg.error);
                                 node.status({ fill: "red", shape: "dot", text: "error" });
                                 return;
