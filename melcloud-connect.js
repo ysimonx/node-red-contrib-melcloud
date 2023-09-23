@@ -238,24 +238,38 @@ module.exports = function(RED) {
 
         node.email = node.credentials.email;
         node.password = node.credentials.password;
+
+        node.deviceid = n.deviceid;
+        node.buildingid = n.buildingid;
         
 
-        function fetchData() {
+        function fetchDeviceData() {
            
             var melcloud =  new Melcloud(node.email,node.password);
 
             melcloud.getContext()
                 .then(
-                    () =>  { 
-                            melcloud.getDeviceInfo()
-                            .then(list => {
-                                node.send(list);
-                                node.status({});
-                            }).catch(msg => {
-                                node.error(msg.error);
-                                node.status({ fill: "red", shape: "dot", text: "error" });
-                                return;
-                            });
+                   async () =>  {       
+                        var d = node.deviceid;
+                        //if ( node.input_deviceid != null) {
+                        //    d = node.input_deviceid;
+                        //}
+
+
+                        var b = node.buildingid;
+                        //if ( node.input_buildingid != null) {
+                        //    b = node.input_buildingid;
+                       // }
+                                     
+                        await melcloud.getDeviceInfo( d, b )
+                        .then(async device => {                       
+                            node.send(device);
+                            node.status({ text: "Temp : " + device.payload.RoomTemperature  + " °C"});
+                        }).catch(err => {
+                            node.error(err);
+                            node.status({ fill: "red", shape: "dot", text: err });
+                            return;
+                        });
                 }).catch(msg => {
                     node.error(msg.error);
                     node.status({ fill: "red", shape: "dot", text: "error" });
@@ -270,10 +284,10 @@ module.exports = function(RED) {
             });
 
             node.on("input", function(){
-                fetchData();
+                fetchDeviceData();
             });
 
-        
+   
     }
 
     RED.nodes.registerType("melcloud-read", MelCloudReadNode);
