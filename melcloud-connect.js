@@ -251,15 +251,15 @@ module.exports = function(RED) {
                 .then(
                    async () =>  {       
                         var d = node.deviceid;
-                        //if ( node.input_deviceid != null) {
-                        //    d = node.input_deviceid;
-                        //}
+                        if ( node.input_deviceid != null) {
+                            d = node.input_deviceid;
+                        }
 
 
                         var b = node.buildingid;
-                        //if ( node.input_buildingid != null) {
-                        //    b = node.input_buildingid;
-                       // }
+                        if ( node.input_buildingid != null) {
+                            b = node.input_buildingid;
+                        }
                                      
                         await melcloud.getDeviceInfo( d, b )
                         .then(async device => {                       
@@ -284,6 +284,20 @@ module.exports = function(RED) {
             });
 
             node.on("input", function(){
+                node.input_deviceid = null;
+                node.input_building = null;
+                
+               
+
+                if (msg.hasOwnProperty("device")) {
+                    if (msg.device.hasOwnProperty("deviceid")) {
+                        node.input_deviceid = msg.device.deviceid;
+                    }
+                    if (msg.device.hasOwnProperty("buildingid")) {
+                        node.input_buildingid = msg.device.buildingid;
+                    }
+                } 
+
                 fetchDeviceData();
             });
 
