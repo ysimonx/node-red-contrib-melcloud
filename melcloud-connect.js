@@ -229,7 +229,82 @@ module.exports = function(RED) {
 
     RED.nodes.registerType("melcloud-device", MelCloudDeviceNode);
     
+    function MelCloudReadNode(n) {
 
+        RED.nodes.createNode(this, n);
+
+        var node = this;
+        node.credentials = RED.nodes.getNode(n.server);
+
+        node.email = node.credentials.email;
+        node.password = node.credentials.password;
+
+        node.deviceid = n.deviceid;
+        node.buildingid = n.buildingid;
+        
+
+        function fetchDeviceData() {
+           
+            var melcloud =  new Melcloud(node.email,node.password);
+
+            melcloud.getContext()
+                .then(
+                   async () =>  {       
+                        var d = node.deviceid;
+                        if ( node.input_deviceid != null) {
+                            d = node.input_deviceid;
+                        }
+
+
+                        var b = node.buildingid;
+                        if ( node.input_buildingid != null) {
+                            b = node.input_buildingid;
+                        }
+                                     
+                        await melcloud.getDeviceInfo( d, b )
+                        .then(async device => {                       
+                            node.send(device);
+                            node.status({ text: "Temp : " + device.payload.RoomTemperature  + " °C"});
+                        }).catch(err => {
+                            node.error(err);
+                            node.status({ fill: "red", shape: "dot", text: err });
+                            return;
+                        });
+                }).catch(msg => {
+                    node.error(msg.error);
+                    node.status({ fill: "red", shape: "dot", text: "error" });
+                    return;
+                });
+          
+            
+            }
+
+            node.on("close", function(){
+            
+            });
+
+            node.on("input", function(){
+                node.input_deviceid = null;
+                node.input_building = null;
+                
+               
+
+                if (msg.hasOwnProperty("device")) {
+                    if (msg.device.hasOwnProperty("deviceid")) {
+                        node.input_deviceid = msg.device.deviceid;
+                    }
+                    if (msg.device.hasOwnProperty("buildingid")) {
+                        node.input_buildingid = msg.device.buildingid;
+                    }
+                } 
+
+                fetchDeviceData();
+            });
+
+   
+    }
+
+    RED.nodes.registerType("melcloud-read", MelCloudReadNode);
 
     function MelCloudConnectNode(n) {
 
