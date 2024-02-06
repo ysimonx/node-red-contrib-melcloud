@@ -11,6 +11,7 @@ class Melcloud {
 
         this.user = param_user;
         this.password = param_password;
+        this.ContextKey = "";
 
     }
 
@@ -19,7 +20,9 @@ class Melcloud {
 
         return new Promise((resolve, reject) => {
            
-          
+            if (self.ContextKey !== "") {
+                resolve();
+            }
     
             var url =  "/Mitsubishi.Wifi.Client/Login/ClientLogin";
     
@@ -80,6 +83,8 @@ class Melcloud {
                         msg.error = "";
                         self.context = msg;
                         
+                        self.ContextKey = msg.payload.LoginData.ContextKey;
+                        
                         resolve(msg);
 
                     }
@@ -109,8 +114,8 @@ class Melcloud {
 
         return new Promise((resolve, reject) => {
            
-       
-        var ContextKey = self.context.payload.LoginData.ContextKey;
+        var ContextKey=self.ContextKey;
+        
         var url =  "/Mitsubishi.Wifi.Client/User/ListDevices";
     
         var options = {
@@ -158,6 +163,7 @@ class Melcloud {
                     
                     // cb_error(msg);
                     msg.error= e;
+                    self.ContextKey="";
                     reject(msg);
                 }
             });
@@ -165,6 +171,7 @@ class Melcloud {
     
         request.on("error", function(err) {
             msg.error = err;
+            self.ContextKey="";
             reject(msg);
         });
     
@@ -179,7 +186,8 @@ class Melcloud {
         var self = this;
 
         return new Promise((resolve, reject) => {
-            var ContextKey = self.context.payload.LoginData.ContextKey;
+            var ContextKey=self.ContextKey;
+            //var ContextKey = self.context.payload.LoginData.ContextKey;
             var url =  "/Mitsubishi.Wifi.Client/Device/SetAta";
         
             var options = {
@@ -226,6 +234,7 @@ class Melcloud {
                 
                     catch(e) { 
                         msg.error = e;
+                        self.ContextKey="";
                         reject(msg); 
                         
                     }
@@ -234,6 +243,7 @@ class Melcloud {
 
             request.on("error", function(err) {
                 msg.error = err;
+                self.ContextKey="";
                 reject(msg); 
             });
 
@@ -248,8 +258,8 @@ class Melcloud {
         var self = this;
         return new Promise((resolve, reject) => {
            
-       
-        var ContextKey = self.context.payload.LoginData.ContextKey;
+        var ContextKey = self.ContextKey;
+        // var ContextKey = self.context.payload.LoginData.ContextKey;
         var url =  "/Mitsubishi.Wifi.Client/Device/Get?id=" + deviceid + "&buildingID=" + buildingid;
     
         // console.log(url);
@@ -301,6 +311,7 @@ class Melcloud {
     
                     console.log(e) ;  
                     msg.error = e;
+                    self.ContextKey="";
                     reject(msg);
                 }
             });
@@ -309,6 +320,7 @@ class Melcloud {
         request.on("error", function(err) {
             
             msg.error = err;
+            self.ContextKey="";
             reject(msg);
            
         });
