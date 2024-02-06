@@ -29,17 +29,21 @@ class Melcloud {
                 port: 443,
                 path: url,
                 headers: {
-                    'Content-Type': "application/json; charset=utf-8",
-                    'Referer': 'https://app.melcloud.com/'
+                   'Content-Type': "application/json; charset=utf-8",
+                   'Referer': 'https://app.melcloud.com/',
+                   'Origin': 'https://app.melcloud.com/',
+                   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0',
+                   'X-Requested-With': 'XMLHttpRequest',
+                   'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'
                 }   
             };
     
             var postData = {
                 "Email":this.user,
                 "Password":this.password,
-                // "Language":7,
-                "AppVersion":"1.22.7.0",
-                "Persist":false,
+                "Language":7,
+                "AppVersion":"1.32.1.0",
+                "Persist":true,
                 "CaptchaResponse":null
             }
     
