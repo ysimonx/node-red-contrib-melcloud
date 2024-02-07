@@ -43,9 +43,19 @@ module.exports = function(RED) {
         node.email = node.credentials.email;
         node.password = node.credentials.password;
         
+        node.mel=null;
+        
         function fetchDeviceData() {
            
             var melcloud =  new Melcloud(node.email,node.password);
+
+            if (node.mel == null) {
+                var melcloud =  new Melcloud(node.email,node.password);
+                node.mel=melcloud;
+            } else { 
+                var melcloud =  node.mel;
+            }
+
 
             melcloud.getContext()
                 .then(
@@ -242,11 +252,18 @@ module.exports = function(RED) {
         node.deviceid = n.deviceid;
         node.buildingid = n.buildingid;
         
+        node.mel = null;
 
         function fetchDeviceData() {
            
-            var melcloud =  new Melcloud(node.email,node.password);
+            if (node.mel == null) {
+                var melcloud =  new Melcloud(node.email,node.password);
+                node.mel=melcloud;
+            } else { 
+                var melcloud =  node.mel;
+            }
 
+            
             melcloud.getContext()
                 .then(
                    async () =>  {       
@@ -316,11 +333,18 @@ module.exports = function(RED) {
         node.email = node.credentials.email;
         node.password = node.credentials.password;
         
+        node.mel=null;
 
         function fetchData() {
            
-            var melcloud =  new Melcloud(node.email,node.password);
+            if (node.mel == null) {
+                var melcloud =  new Melcloud(node.email,node.password);
+                node.mel=melcloud;
+            } else { 
+                var melcloud =  node.mel;
+            }
 
+            
             melcloud.getContext()
                 .then(
                     () =>  { 

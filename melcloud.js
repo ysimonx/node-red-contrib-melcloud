@@ -22,6 +22,7 @@ class Melcloud {
            
             if (self.ContextKey !== "") {
                 resolve();
+                return;
             }
     
             var url =  "/Mitsubishi.Wifi.Client/Login/ClientLogin";
@@ -155,6 +156,7 @@ class Melcloud {
                 try {
                     msg.payload = JSON.parse(msg.payload); 
                     msg.error = "";
+                    msg.context=self.ContextKey;
                     resolve(msg);
                     // cb_ok(context, msg);
                 }
@@ -227,7 +229,7 @@ class Melcloud {
                     
                         msg.error = "";
                         self.context = msg;
-                        
+                        msg.context=self.ContextKey;
                         resolve(msg);
 
                     }
@@ -300,7 +302,7 @@ class Melcloud {
                 try {
                     msg.payload = JSON.parse(msg.payload); 
                     msg.error = "";
-                   
+                    msg.context=self.ContextKey;
                     resolve(msg);
                     // console.log(msg.payload.WeatherObservations);
                     
